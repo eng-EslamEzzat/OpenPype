@@ -42,7 +42,6 @@ class OverviewWidget(QtWidgets.QFrame):
             ),
             subset_content_widget
         )
-        #
         subset_view_cards = InstanceCardView(controller, subset_views_widget)
         # TODO Edited
         subset_list_view = InstanceListView(controller, subset_views_widget)
@@ -100,7 +99,6 @@ class OverviewWidget(QtWidgets.QFrame):
         main_layout.setContentsMargins(0, 0, 0, 0)
         main_layout.addWidget(subset_content_widget, 1)
 
-        #
         # TODO EDITED
         # change_anim = QtCore.QVariantAnimation()
         class VariantAnimation(QtCore.QVariantAnimation):
@@ -171,7 +169,6 @@ class OverviewWidget(QtWidgets.QFrame):
         self._create_widget = create_widget
         self._subset_views_widget = subset_views_widget
         self._subset_attributes_wrap = subset_attributes_wrap
-        #
         self._change_anim = change_anim
         #
         # Start in create mode

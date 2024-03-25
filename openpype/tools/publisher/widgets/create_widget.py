@@ -278,11 +278,12 @@ class CreateWidget(QtWidgets.QWidget):
         variant_input.returnPressed.connect(self._on_create)
         variant_input.textChanged.connect(self._on_variant_change)
 
-        # TODO Seif
+        # TODO Original
         # creators_view.selectionModel().currentChanged.connect(
         #     self._on_creator_item_change
         # )
-        # Replacement for the code above.
+
+        # TODO Replacement for the code above.
         QtCore.QObject.connect(creators_view.selectionModel(),
                                QtCore.SIGNAL('currentChanged(QModelIndex, QModelIndex)'), self._on_creator_item_change)
 
