@@ -93,6 +93,7 @@ class InstallPySide(PreLaunchHook):
         except Exception as e:
             self.log.warning(f"Couldn't Install PySide, {e}")
 
+
     def install_pyside(self, python_executable: Path):
         """Install PySide2 python module to 3de4's python."""
 
