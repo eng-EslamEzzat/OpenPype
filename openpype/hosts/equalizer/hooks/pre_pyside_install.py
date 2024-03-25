@@ -95,7 +95,7 @@ class InstallPySide(PreLaunchHook):
 
 
     def install_pyside(self, python_executable: Path):
-        """Install PySide2 python module to 3de4's python."""
+        """Install PySide python module to 3de4's python."""
 
         args = [
             python_executable.as_posix(),
