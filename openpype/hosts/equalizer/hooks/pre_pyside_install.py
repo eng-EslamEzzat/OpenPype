@@ -86,8 +86,7 @@ class InstallPySide(PreLaunchHook):
         from openpype.hosts.equalizer import EQUALIZER_HOST_DIR
         try:
             target = os.path.join(EQUALIZER_HOST_DIR, "vendor")
-            command = f"cd /D C:\\Python27\\Scripts && pip install --target {target} PySide==1.2.4"
-            # Execute commands
+            command = f"cd /D C:\\Python27\\Scripts && pip2.7.exe install --target {target} PySide==1.2.4"
             process = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
             return process.returncode == 0
         except Exception as e:
