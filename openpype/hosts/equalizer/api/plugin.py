@@ -91,21 +91,22 @@ class EqualizerCreator(Creator):
         self.host.update_context_data(context, changes=update_list)
 
     def remove_instances(self, instances):
-        # context = self.host.get_context_data()
-        # if not context.get("publish_instances"):
-        #     context["publish_instances"] = []
+        context = self.host.get_context_data()
+        if not context.get("publish_instances"):
+            context["publish_instances"] = []
 
-        # ids_to_remove = [
-        #     instance.get("instance_id")
-        #     for instance in instances
-        # ]
-        # for instance in context.get("publish_instances"):
-        #     if instance.get("instance_id") in ids_to_remove:
-        #         context["publish_instances"].remove(instance)
+        ids_to_remove = [
+            instance.get("instance_id")
+            for instance in instances
+        ]
+        for instance in context.get("publish_instances"):
+            if instance.get("instance_id") in ids_to_remove:
+                context["publish_instances"].remove(instance)
 
-        # self.host.update_context_data(context, changes={})
         for instance in instances:
             self._remove_instance_from_context(instance)
+            
+        self.host.update_context_data(context, changes={})
 
 
 class ExtractScriptBase(OptionalPyblishPluginMixin):
