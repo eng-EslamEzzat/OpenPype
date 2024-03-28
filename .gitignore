@@ -43,6 +43,7 @@ Temporary Items
 /vendor/python/*
 /.venv
 /venv/
+/openpype/hosts/equalizer/vendor/
 
 # Documentation
 ###############
