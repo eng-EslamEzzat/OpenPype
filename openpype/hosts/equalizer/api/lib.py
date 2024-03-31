@@ -17,7 +17,7 @@ def convert_png(input_image):
     ]
 
     try:
-        subprocess.Popen(ffmpeg_command, shell=True).wait()
+        subprocess.check_output(ffmpeg_command, shell=True).wait()
         os.remove(input_image)
 
     except subprocess.CalledProcessError as e:
@@ -25,7 +25,7 @@ def convert_png(input_image):
 
 
 def run_warp4(input_path, output_path):
-    warp4_exe_path = "{0}\\bin\\warp4.exe".format(tde4.get3DEInstallPath())
+    warp4_exe_path = os.path.join(tde4.get3DEInstallPath(), "bin", "warp4.exe")
     in_flag = "-in"
     out_flag = "-out"
     action_flag = "-action"
@@ -42,14 +42,13 @@ def run_warp4(input_path, output_path):
     ]
 
     try:
-        subprocess.Popen(command, shell=True).wait()
+        subprocess.check_output(command, shell=True).wait()
         return output_path
     except subprocess.CalledProcessError as e:
         raise KnownPublishError("Error during conversion for {0}: {1}".format(input_path, e))
-    
 
 def get_distortion_resolution(footage_path):
-
+    
     first_img = os.listdir(footage_path)[0]
     ffprobe_path = get_ffmpeg_tool_args("ffprobe")[0]
     command = [
@@ -58,8 +57,13 @@ def get_distortion_resolution(footage_path):
         os.path.join(footage_path, first_img)
     ]
 
-    lines = subprocess.check_output(command, shell=True).decode('utf-8').split('\n')
-
-    # Extract width and height from the lines
-    width, height = [int(line.split('=')[1]) for line in lines if line.startswith("width") or line.startswith("height")]
-    return (width, height)
+    try:
+        output = subprocess.check_output(command, stderr=subprocess.PIPE)
+        lines = output.decode('utf-8').split('\n')
+        width, height = [int(line.split('=')[1]) for line in lines if line.startswith("width") or line.startswith("height")]
+        return (width, height)
+    
+    except subprocess.CalledProcessError as e:
+        # Handle the case where the command failed
+        print("Error:", e.stderr.decode('utf-8'))
+        return None
