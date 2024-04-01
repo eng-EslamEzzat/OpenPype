@@ -28,7 +28,7 @@ class ExtractWarpFootage(publish.Extractor,
         cam = tde4.getCurrentCamera()
         camera_path = tde4.getCameraPath(cam)
         input_folder = os.path.dirname(camera_path)
-        footage_paths = [path for path in os.listdir(input_folder) if path.endswith(".exr")][:10]
+        footage_paths = [path for path in os.listdir(input_folder) if path.endswith(".exr")]
         footage_paths.sort()
         staging_dir = self.staging_dir(instance)
 
