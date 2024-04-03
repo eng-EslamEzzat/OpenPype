@@ -88,8 +88,10 @@ class InstallPySide(PreLaunchHook):
             self.log.info("PySide is installing...")
             target = os.path.join(EQUALIZER_HOST_DIR, "vendor")
             # command = f"pip install pip==20.3.1 && cd /D C:\\Python27\\Scripts && pip2.7.exe install --target {target} PySide==1.2.4"
-            command = f"python -m pip install pip==20.3.1 && cd /D C:\\Python27\\Scripts && pip2.7.exe install --target {target} PySide==1.2.4 && python -m pip install --upgrade pip"
+            # command = f"python -m pip install pip==20.3.1 && cd /D C:\\Python27\\Scripts && pip2.7.exe install --target {target} PySide==1.2.4 && python -m pip install --upgrade pip"
+            command = f"python -m pip install pip==20.3.1 && python -m pip install --target {target} PySide"
             process = subprocess.run(command, shell=True, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+            # os.system("start /wait cmd /k cd /D C:\\Python27\\Scripts")
             return process.returncode == 0
         except Exception as e:
             self.log.warning(f"Couldn't Install PySide, {e}")
@@ -147,7 +149,10 @@ class InstallPySide(PreLaunchHook):
             # Try to read the value of the PYTHONPATH environmental variable.
             try:
                 python_path, _ = winreg.QueryValueEx(reg_key, 'PYTHONPATH')
-                # print("PYTHONPATH:", python_path)
+
+                if python_path != os.path.join(EQUALIZER_HOST_DIR, "vendor"):
+                    os.system("SETX {0} \"{1}\"".format("PYTHONPATH", os.path.join(EQUALIZER_HOST_DIR, "vendor")))
+                
             except FileNotFoundError:
                 print("PYTHONPATH is not set.")
                 os.system("SETX {0} \"{1}\"".format("PYTHONPATH", os.path.join(EQUALIZER_HOST_DIR, "vendor")))
