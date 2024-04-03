@@ -5,7 +5,8 @@ from mock import patch
 from openpype.lib import import_filepath
 from openpype.pipeline import OptionalPyblishPluginMixin, publish
 from openpype.hosts.equalizer.api import EqualizerHost
-
+import types
+import six
 class ExtractDistortionToNuke(publish.Extractor,
                                 OptionalPyblishPluginMixin):
     """Extract Nuke script for matchmove.
@@ -46,14 +47,20 @@ class ExtractDistortionToNuke(publish.Extractor,
 
         # import export script from 3DEqualizer
         exporter_path = os.path.join(instance.data["tde4_path"], "sys_data", "py_scripts", "export_nuke_grid_warp_generic_LD.py")  # noqa: E501
+        module = types.ModuleType("export_nuke_grid_warp_generic_LD")
+        module.__file__ = exporter_path
         self.log.debug("Importing {}".format(exporter_path))
-        
+
         # Hide UI with patchin postCustomRequester
         with patch("tde4.postCustomRequester", lambda *args, **kwargs: 0),\
              patch("tde4.postProgressRequesterAndContinue", lambda *args, **kwargs: None),\
-             patch("tde4.updateProgressRequester", lambda *args, **kwargs: True):   
-            exporter = import_filepath(exporter_path)
-            exporter._export_nuke_grid_warp(file_path, img_width, img_height, grid_width, grid_height, startframe, overscan, img_overscan_width, img_overscan_height, flop)
+             patch("tde4.updateProgressRequester", lambda *args, **kwargs: True):
+            with open(exporter_path, 'r') as f:
+                script = f.read()
+                if not "import tde4" in script:
+                    script = "import tde4\n" + script
+            six.exec_(script, module.__dict__)
+            module._export_nuke_grid_warp(file_path, img_width, img_height, grid_width, grid_height, startframe, overscan, img_overscan_width, img_overscan_height, flop)
 
         # create representation data
         if "representations" not in instance.data:
